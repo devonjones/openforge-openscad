@@ -23,17 +23,20 @@ const MyBox = styled(Box)(({ theme }) => ({
 export default function App() {
   //const importUrl = getImportUrl();
   const importUrls = useMemo(() => [
+    {name: 'Base: Square', url: '/scad/bases-square.scad'},
+    {name: 'Base: Square: S2W Wall', url: '/scad/bases-square-wall.scad'},
+    {name: 'Base: Square: S2W Corner', url: '/scad/bases-square-corner.scad'},
+    {name: 'Base: Curved', url: '/scad/bases-curved.scad'},
     {name: 'Base: Curved: Radial', url: '/scad/bases-curved-radial.scad'},
     {name: 'Base: Curved: Inverted', url: '/scad/bases-curved-inverted.scad'},
-    {name: 'Base: Curved', url: '/scad/bases-curved.scad'},
     {name: 'Base: Diagonal', url: '/scad/bases-diagonal.scad'},
-    {name: 'Base: Hallway', url: '/scad/bases-hallway.scad'},
-    {name: 'Base: Hex', url: '/scad/bases-hex.scad'},
+    {name: 'Base: Hex (60 degrees)', url: '/scad/bases-hex.scad'},
+    {name: 'Base: Infinity Hallway', url: '/scad/bases-hallway.scad'},
     {name: 'Base: Portal', url: '/scad/bases-portal.scad'},
-    {name: 'Base: Square: Corner', url: '/scad/bases-square-corner.scad'},
-    {name: 'Base: Square: Wall', url: '/scad/bases-square-wall.scad'},
-    {name: 'Base: Square', url: '/scad/bases-square.scad'},
-    {name: 'Base: Connectors', url: '/scad/connectors.scad'},
+    {name: 'Risers: Square', url: '/scad/risers_square.scad'},
+    {name: 'Risers: Curved', url: '/scad/risers_curved.scad'},
+    {name: 'Risers: Walls', url: '/scad/risers_walls.scad'},
+    {name: 'Connectors', url: '/scad/connectors.scad'},
     {name: 'Impl: Curved', url: '/scad/impl_curved.scad'},
     {name: 'Impl: Curved Inverted', url: '/scad/impl_curved_inverted.scad'},
     {name: 'Impl: Curved Radial', url: '/scad/impl_curved_radial.scad'},
@@ -48,9 +51,6 @@ export default function App() {
     {name: 'Lock: Magnetic', url: '/scad/lock_magnetic.scad'},
     {name: 'Lock: Openlock', url: '/scad/lock_openlock.scad'},
     {name: 'Lock: Openlock Topless', url: '/scad/lock_openlock_topless.scad'},
-    {name: 'Risers: Curved', url: '/scad/risers_curved.scad'},
-    {name: 'Risers: Square', url: '/scad/risers_square.scad'},
-    {name: 'Risers: Walls', url: '/scad/risers_walls.scad'},
   ], []);
 
   console.log('Importing', importUrls);
