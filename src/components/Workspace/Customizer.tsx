@@ -1,5 +1,5 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Alert, AlertTitle } from '@mui/material';
+import { Alert, AlertTitle, SelectChangeEvent } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -12,6 +12,11 @@ import { MuiChipsInput } from 'mui-chips-input';
 import React, { useMemo } from 'react';
 
 import { Parameter } from '../../lib/openSCAD/parseParameter';
+import parseOpenScadParameters from '../../lib/openSCAD/parseParameter';
+import { useWorkspaceProvider } from '../providers/WorkspaceProvider';
+import { useFileSystemProvider } from '../providers/FileSystemProvider';
+import FileSelector from './FileSystem/FileSelector';
+import { useOpenSCADProvider } from '../providers/OpenscadWorkerProvider';
 
 type Parameters = Parameter[];
 
@@ -38,6 +43,10 @@ const validateBoolean = (value) => {
 };
 
 export default function Customizer({ parameters, onChange }: Props) {
+  const { setCode, selectedFile, setSelectedFile } = useWorkspaceProvider();
+  const { files } = useFileSystemProvider();
+  const { preview } = useOpenSCADProvider();
+
   const changeParameter = (name: string, newValue?) => {
     const newParameters = parameters.map((parameter) => {
       if (parameter.name === name) {
@@ -75,6 +84,22 @@ export default function Customizer({ parameters, onChange }: Props) {
     changeParameter(name, newValue);
   };
 
+  // Load the selected file.
+  const handleFileSelect = (event: SelectChangeEvent<string>) => {
+    const file = files.find((f) => f.path === event.target.value);
+
+    if (file) {
+      (async () => {
+        const text = await file.text();
+        setCode(text);
+        setSelectedFile(file.path);
+        // parse parameters from new file and render
+        const newParams = parseOpenScadParameters(text);
+        preview(text, newParams);
+      })();
+    }
+  };
+  
   // Group parameters
   const groups = useMemo(
     () =>
@@ -97,8 +122,8 @@ export default function Customizer({ parameters, onChange }: Props) {
     <div style={{ height: '100%', overflow: 'scroll' }}>
       <Alert severity="info" sx={{ mb: 1 }}>
         <AlertTitle>Customizer</AlertTitle>
-        Adjust the parameters of your design.
       </Alert>
+      <FileSelector onChange={handleFileSelect} selectedFile={selectedFile} namePrefixes={["bases-", "risers_"]} />
       {Object.entries(groups)
         .filter((x) => x[0].toLowerCase() !== 'hidden')
         .map(([groupName, groupParams], idx) => (

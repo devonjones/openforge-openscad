@@ -1,13 +1,14 @@
 import { styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import ErrorBox from './components/ErrorBox';
 import Workspace from './components/Workspace';
 import { useFileSystemProvider } from './components/providers/FileSystemProvider';
 import WorkspaceProvider from './components/providers/WorkspaceProvider';
-import useImport from './hooks/useImport';
+import useImports from './hooks/useImports';
+
 
 const MyBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -20,11 +21,41 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function App() {
-  const importUrl = getImportUrl();
+  //const importUrl = getImportUrl();
+  const importUrls = useMemo(() => [
+    {name: 'Base: Curved: Radial', url: '/scad/bases-curved-radial.scad'},
+    {name: 'Base: Curved: Inverted', url: '/scad/bases-curved-inverted.scad'},
+    {name: 'Base: Curved', url: '/scad/bases-curved.scad'},
+    {name: 'Base: Diagonal', url: '/scad/bases-diagonal.scad'},
+    {name: 'Base: Hallway', url: '/scad/bases-hallway.scad'},
+    {name: 'Base: Hex', url: '/scad/bases-hex.scad'},
+    {name: 'Base: Portal', url: '/scad/bases-portal.scad'},
+    {name: 'Base: Square: Corner', url: '/scad/bases-square-corner.scad'},
+    {name: 'Base: Square: Wall', url: '/scad/bases-square-wall.scad'},
+    {name: 'Base: Square', url: '/scad/bases-square.scad'},
+    {name: 'Base: Connectors', url: '/scad/connectors.scad'},
+    {name: 'Impl: Curved', url: '/scad/impl_curved.scad'},
+    {name: 'Impl: Curved Inverted', url: '/scad/impl_curved_inverted.scad'},
+    {name: 'Impl: Curved Radial', url: '/scad/impl_curved_radial.scad'},
+    {name: 'Impl: Diagonal', url: '/scad/impl_diagonal.scad'},
+    {name: 'Impl: Hallway', url: '/scad/impl_hallway.scad'},
+    {name: 'Impl: Hex', url: '/scad/impl_hex.scad'},
+    {name: 'Impl: Square', url: '/scad/impl_square.scad'},
+    {name: 'Impl: Wall', url: '/scad/impl_wall.scad'},
+    {name: 'Lock: Dragonlock', url: '/scad/lock_dragonlock.scad'},
+    {name: 'Lock: Flex Magnetic', url: '/scad/lock_flex_magnetic.scad'},
+    {name: 'Lock: Infinitylock', url: '/scad/lock_infinitylock.scad'},
+    {name: 'Lock: Magnetic', url: '/scad/lock_magnetic.scad'},
+    {name: 'Lock: Openlock', url: '/scad/lock_openlock.scad'},
+    {name: 'Lock: Openlock Topless', url: '/scad/lock_openlock_topless.scad'},
+    {name: 'Risers: Curved', url: '/scad/risers_curved.scad'},
+    {name: 'Risers: Square', url: '/scad/risers_square.scad'},
+    {name: 'Risers: Walls', url: '/scad/risers_walls.scad'},
+  ], []);
 
-  const { error, isLoading } = useImport(importUrl, true);
-  const { files } = useFileSystemProvider();
-
+  console.log('Importing', importUrls);
+  const { error, isLoading } = useImports(importUrls, true);
+  
   // Show a loading indicator during the import.
   if (isLoading) {
     return (
@@ -43,17 +74,9 @@ export default function App() {
     );
   }
 
-  if (importUrl && files.length === 0) {
-    return (
-      <MyBox>
-        <ErrorBox error={new Error(`No files found at ${importUrl}`)} />
-      </MyBox>
-    );
-  }
-
   return (
     <WorkspaceProvider>
-      <Workspace initialMode={importUrl ? 'customizer' : 'editor'} />
+      <Workspace initialMode={'customizer'} />
     </WorkspaceProvider>
   );
 }

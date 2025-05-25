@@ -21,94 +21,71 @@ type Props = {
 };
 
 export default function Layout({ title, children }: Props) {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [showImportDialog, setShowImportDialog] = React.useState(false);
-
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = (e) => {
-    setAnchorEl(null);
-    switch (e.target.id) {
-      case 'import_from_url':
-        setShowImportDialog(true);
-        break;
-    }
-  };
-
   return (
     <Box component="div" sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
-        <Toolbar>
-          <IconButton
-            id="menu-button"
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={handleClick}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'menu-button',
-            }}
-          >
-            <MenuItem onClick={handleClose} id="import_from_url">
-              Import from URL
-            </MenuItem>
-          </Menu>
-          {showImportDialog && (
-            <ImportFromUrlDialog
-              onClose={() => {
-                setShowImportDialog(false);
+        <Toolbar sx={{ flexDirection: 'column', alignItems: 'stretch', minHeight: 'unset !important', p: 0 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', px: 2, py: 1 }}>
+            <span style={{ fontWeight: 'bold', fontSize: '1.2em' }}>OpenForge Catalog</span>
+            <span style={{ fontSize: '0.95em', color: '#eee', display: 'flex', alignItems: 'center', gap: 1 }}>
+              Version 0.3.1&nbsp;|&nbsp;
+              <a className='visibleLink' href='https://github.com/devonjones/openforge-tutorials/wiki' target="_blank" style={{ color: '#fff', textDecoration: 'underline' }}>Wiki</a>&nbsp;|&nbsp;
+              <a className='visibleLink' href='https://www.patreon.com/masterworktools' target="_blank" style={{ color: '#fff', textDecoration: 'underline' }}>Support us on Patreon</a>
+            </span>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, px: 2, pb: 1 }}>
+            <button
+              className="tab"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                fontSize: '1.1em',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: '2px solid transparent',
+                outline: 'none',
               }}
-            />
-          )}
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            sx={{
-              textDecoration: 'none',
-              boxShadow: 'none',
-              color: 'white',
-            }}
-            href="__WEBSITE_URL"
-          >
-            {title}
-          </Typography>
-          <Box component="div" sx={{ flexGrow: 1 }}></Box>
-
-          <Tooltip title="Report an issue">
-            <IconButton
-              component="a"
-              href={'__GITHUB_ISSUE_URL'}
-              target="_blank"
+              onClick={() => { window.location.href = 'http://localhost:3000'; }}
             >
-              <BugReportIcon />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Go to GitHub repository">
-            <IconButton
-              component="a"
-              href={'__GITHUB_REPO_URL'}
-              target="_blank"
+              Part Search
+            </button>
+            <button
+              className="tab"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                fontSize: '1.1em',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                borderBottom: '2px solid transparent',
+                outline: 'none',
+              }}
+              onClick={() => { window.location.href = 'http://localhost:3000'; }}
             >
-              <GitHubIcon />
-            </IconButton>
-          </Tooltip>
+              Blueprints
+            </button>
+            <button
+              className="tab active"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '1.1em',
+                padding: '8px 16px',
+                cursor: 'default',
+                borderBottom: '2px solid #fff',
+                outline: 'none',
+              }}
+            >
+              Base Generator
+            </button>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box component="main" sx={{ flexGrow: 1, pt: 0 }}>

@@ -40,18 +40,6 @@ export default function Workspace({ initialMode }: Props) {
     }
 
     const newParams = parseOpenScadParameters(code);
-    // Add old values to new params
-    if (parameters.length) {
-      // REFACTOR: rework to use a map instead of two loops
-      newParams.forEach((newParam) => {
-        const oldParam = parameters.find(
-          (param) => param.name === newParam.name
-        );
-        if (oldParam) {
-          newParam.value = oldParam.value;
-        }
-      });
-    }
     setParameters(newParams);
 
     if (mode === 'customizer' && (!newParams || !newParams.length)) {
@@ -66,9 +54,6 @@ export default function Workspace({ initialMode }: Props) {
 
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
-      <Box sx={{ height: '100%', borderRight: '1px solid #ccc', p: 1 }}>
-        <Sidebar mode={mode} onChange={(value) => setMode(value)} />
-      </Box>
       <Grid container sx={{ height: '100%', flexGrow: 1 }}>
         <Grid
           item
