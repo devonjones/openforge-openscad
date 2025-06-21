@@ -76,6 +76,8 @@ module center_connector_negative(edge, priority, lock, magnets, magnet_hole, hei
             openlock_negative(SUPPORTS);
         } else if (priority == "lock" && lock == "infinitylock" && magnets == "none") {
             infinitylock_negative();
+        } else if (priority == "lock" && lock == "dragonlock" && magnets == "none") {
+            dragonlock_negative();
         } else if (priority == "lock" && lock == "dragonlocktriplex" && magnets == "none") {
             dragonlock_negative();
         } else {
