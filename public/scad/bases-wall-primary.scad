@@ -1,13 +1,11 @@
 /* [Texture] */
-// Select a texture.  Some textures don't exist for some sizes.
-// Specifically, Facade is missing a lot of sizes depending on the base.  Rough stone presently doesnt
-// Have 3x (D)
-TEXTURE = "Dungeon Stone"; // ["Dungeon Stone", "Cut-Stone", "Towne", "Plain", "Rough Stone", "Facade, Ground Level", "Facade, Ground Level, Door", "Facade, Upper Level", "Facade, Upper Level, Chimney", "Necromancer's Ossuary"]
+// Select a texture.
+TEXTURE = "Dungeon Stone"; // [Dungeon Stone, Cut-Stone, Towne, Plain, Necromancer's Ossuary]
 
 /* [Base Wall Size] */
-// Size: What is the wall size
-// Mirror BA: BA doesn't have symmetry, so this allows you to mirror it.
+// What is the wall size
 SIZE = "2x (A)"; //[2x (A), 1x (IA), 1.5x (BA), 3x (D), 4x (Q)]
+// BA doesn't have symmetry, allows you to mirror
 MIRROR_BA = "false"; //[true, false]
 
 /* [Square Basis] */
@@ -28,11 +26,11 @@ TOPLESS = "true"; // [true, false]
 SUPPORTS = "true"; // [true, false]
 
  /* [Magnets] */
-// Magnets: Use magnets or not.
 // Magnet Hole: Size of hole for magnet.  6 works well for 5mm buckyball style magnets.
 // If you want old school bases with only one connector in the middle and no magnets, set this to 0
-MAGNETS = "flex_magnetic"; // [magnetic,flex_magnetic,none]
-// Size of hole for magnet.  6 works well for 5mm buckyball style magnets.
+// Magnets: Use magnets or not.
+MAGNETS = "flex_magnetic"; // [magnetic, flex_magnetic, none]
+// Size of hole for magnet.  6: 5mm buckyball.  0: removes
 MAGNET_HOLE = 6;
 
 include <connectors.scad>
@@ -100,10 +98,10 @@ texture_files = [
     ["Towne", "towne"],
     ["Plain", "plain"],
     ["Rough Stone", "rough_stone"],
-    ["Facade, Ground Level", "facade.ground_level"],
-    ["Facade, Ground Level, Door", "facade.ground_level.door"],
-    ["Facade, Upper Level", "facade.upper_level"],
-    ["Facade, Upper Level, Chimney", "facade.upper_level.chimney"],
+    ["Facade - Ground Level", "facade.ground_level"],
+    ["Facade - Ground Level - Door", "facade.ground_level.door"],
+    ["Facade - Upper Level", "facade.upper_level"],
+    ["Facade - Upper Level - Chimney", "facade.upper_level.chimney"],
     ["Necromancer's Ossuary", "necromancer"],  
 ];
 texture_file = texture_files[keyLookup(texture_files, [TEXTURE])][1];

@@ -4,6 +4,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,12 +18,55 @@ import { useWorkspaceProvider } from '../providers/WorkspaceProvider';
 import { useFileSystemProvider } from '../providers/FileSystemProvider';
 import FileSelector from './FileSystem/FileSelector';
 import { useOpenSCADProvider } from '../providers/OpenscadWorkerProvider';
+import useDynamicImports from '../../hooks/useDynamicImports';
 
 type Parameters = Parameter[];
 
 type Props = {
   parameters: Parameters;
   onChange: (parameters: Parameters) => void;
+};
+
+// File import mapping - maps filenames to their required STL dependencies
+const fileImportMap = {
+  'bases-wall-primary.scad': [
+    {name: 'stl: base: dungeon-stone A', url: '/scad/dungeon_stone.blank.A.stl'},
+    {name: 'stl: base: dungeon-stone BA', url: '/scad/dungeon_stone.blank.BA.stl'},
+    {name: 'stl: base: dungeon-stone D', url: '/scad/dungeon_stone.blank.D.stl'},
+    {name: 'stl: base: dungeon-stone IA', url: '/scad/dungeon_stone.blank.IA.stl'},
+    {name: 'stl: base: dungeon-stone Q', url: '/scad/dungeon_stone.blank.Q.stl'},
+    {name: 'stl: base: cut-stone A', url: '/scad/cut-stone.blank.A.stl'},
+    {name: 'stl: base: cut-stone BA', url: '/scad/cut-stone.blank.BA.stl'},
+    {name: 'stl: base: cut-stone D', url: '/scad/cut-stone.blank.D.stl'},
+    {name: 'stl: base: cut-stone IA', url: '/scad/cut-stone.blank.IA.stl'},
+    {name: 'stl: base: cut-stone Q', url: '/scad/cut-stone.blank.Q.stl'},
+    /*{name: 'stl: base: facade ground-level A', url: '/scad/facade.ground_level.blank.A.stl'},
+    {name: 'stl: base: facade ground-level BA', url: '/scad/facade.ground_level.blank.BA.stl'},
+    {name: 'stl: base: facade ground-level D', url: '/scad/facade.ground_level.blank.D.stl'},
+    {name: 'stl: base: facade ground-level IA', url: '/scad/facade.ground_level.blank.IA.stl'},
+    {name: 'stl: base: facade ground-level door A', url: '/scad/facade.ground_level.door.blank.A.stl'},
+    {name: 'stl: base: facade ground-level door BA', url: '/scad/facade.ground_level.door.blank.BA.stl'},
+    {name: 'stl: base: facade upper-level A', url: '/scad/facade.upper_level.blank.A.stl'},
+    {name: 'stl: base: facade upper-level BA', url: '/scad/facade.upper_level.blank.BA.stl'},
+    {name: 'stl: base: facade upper-level D', url: '/scad/facade.upper_level.blank.D.stl'},
+    {name: 'stl: base: facade upper-level IA', url: '/scad/facade.upper_level.blank.IA.stl'},
+    {name: 'stl: base: facade upper-level chimney A', url: '/scad/facade.upper_level.chimney.blank.A.stl'},
+    {name: 'stl: base: facade upper-level chimney D', url: '/scad/facade.upper_level.chimney.blank.D.stl'},*/
+    {name: 'stl: base: necromancer A', url: '/scad/necromancer.blank.A.stl'},
+    {name: 'stl: base: necromancer BA', url: '/scad/necromancer.blank.BA.stl'},
+    {name: 'stl: base: necromancer D', url: '/scad/necromancer.blank.D.stl'},
+    {name: 'stl: base: necromancer IA', url: '/scad/necromancer.blank.IA.stl'},
+    {name: 'stl: base: necromancer Q', url: '/scad/necromancer.blank.Q.stl'},
+    /*{name: 'stl: base: rough-stone A', url: '/scad/rough_stone.blank.A.stl'},
+    {name: 'stl: base: rough-stone BA', url: '/scad/rough_stone.blank.BA.stl'},
+    {name: 'stl: base: rough-stone IA', url: '/scad/rough_stone.blank.IA.stl'},
+    {name: 'stl: base: rough-stone Q', url: '/scad/rough_stone.blank.Q.stl'},*/
+    {name: 'stl: base: towne A', url: '/scad/towne.blank.A.stl'},
+    {name: 'stl: base: towne BA', url: '/scad/towne.blank.BA.stl'},
+    {name: 'stl: base: towne D', url: '/scad/towne.blank.D.stl'},
+    {name: 'stl: base: towne IA', url: '/scad/towne.blank.IA.stl'},
+    {name: 'stl: base: towne Q', url: '/scad/towne.blank.Q.stl'},
+  ]
 };
 
 const validateNumber = (value) => {
@@ -46,6 +90,7 @@ export default function Customizer({ parameters, onChange }: Props) {
   const { setCode, selectedFile, setSelectedFile } = useWorkspaceProvider();
   const { files } = useFileSystemProvider();
   const { preview } = useOpenSCADProvider();
+  const { importFiles, isLoading: isImporting, currentFile } = useDynamicImports();
 
   const changeParameter = (name: string, newValue?) => {
     const newParameters = parameters.map((parameter) => {
@@ -90,6 +135,15 @@ export default function Customizer({ parameters, onChange }: Props) {
 
     if (file) {
       (async () => {
+        // Check if this file has dependencies to load first
+        const fileName = file.name;
+        const dependencies = fileImportMap[fileName];
+        
+        if (dependencies) {
+          console.log(`Loading dependencies for ${fileName}`);
+          await importFiles(dependencies);
+        }
+
         const text = await file.text();
         setCode(text);
         setSelectedFile(file.path);
@@ -119,7 +173,35 @@ export default function Customizer({ parameters, onChange }: Props) {
   );
 
   return (
-    <div style={{ height: '100%', overflow: 'scroll' }}>
+    <div style={{ height: '100%', overflow: 'scroll', position: 'relative' }}>
+      {isImporting && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <CircularProgress size={40} />
+          <div style={{ marginTop: 16, textAlign: 'center' }}>
+            <div>Loading STL dependencies...</div>
+            {currentFile && (
+              <div style={{ fontSize: '0.9em', color: '#666', marginTop: 8 }}>
+                {currentFile}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      
       <Alert severity="info" sx={{ mb: 1 }}>
         <AlertTitle>Customizer</AlertTitle>
       </Alert>

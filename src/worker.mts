@@ -49,6 +49,11 @@ onmessage = async (event: MessageEvent<WorkerMessage>) => {
         );
         break;
 
+      // Users want to list all files in OpenSCAD file system
+      case WorkerMessageType.FS_LIST:
+        response = await openSCAD.listFiles();
+        break;
+
       default:
         throw new Error('Unknown message type');
     }

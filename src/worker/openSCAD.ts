@@ -214,6 +214,15 @@ class OpenSCADWrapper {
     return true; // TODO `boolean` might not be the best thing to return here
   }
 
+  async listFiles() {
+    return {
+      files: this.files.map((file) => ({
+        name: file.name,
+        path: file.path || file.name,
+      })),
+    };
+  }
+
   /**
    *
    * @param code Code for the OpenSCAD input file

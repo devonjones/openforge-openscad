@@ -5,7 +5,6 @@ import React, { useMemo } from 'react';
 
 import ErrorBox from './components/ErrorBox';
 import Workspace from './components/Workspace';
-import { useFileSystemProvider } from './components/providers/FileSystemProvider';
 import WorkspaceProvider from './components/providers/WorkspaceProvider';
 import useImports from './hooks/useImports';
 
@@ -21,12 +20,12 @@ const MyBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function App() {
-  //const importUrl = getImportUrl();
   const importUrls = useMemo(() => [
     {name: 'Base: Square', url: '/scad/bases-square.scad'},
     {name: 'Base: Square: S2W Wall', url: '/scad/bases-square-wall.scad'},
     {name: 'Base: Square: S2W Corner', url: '/scad/bases-square-corner.scad'},
-    {name: 'Base: Curved', url: '/scad/bases-curved.scad'},
+    {name: 'Base: Wall: Primary Wall (Beta)', url: '/scad/bases-wall-primary.scad'},
+    {name: 'Base: Curved (Updated 0.5.0)', url: '/scad/bases-curved.scad'},
     {name: 'Base: Curved: Radial', url: '/scad/bases-curved-radial.scad'},
     {name: 'Base: Curved: Inverted', url: '/scad/bases-curved-inverted.scad'},
     {name: 'Base: Diagonal', url: '/scad/bases-diagonal.scad'},
@@ -79,18 +78,4 @@ export default function App() {
       <Workspace initialMode={'customizer'} />
     </WorkspaceProvider>
   );
-}
-
-function getImportUrl(): string | undefined {
-  let search = window.location.search;
-
-  // Trim the leading question mark
-  if (search.startsWith('?')) {
-    search = search.substring(1);
-  }
-
-  // If the search string is an url, load it through the fetcha.
-  if (search.startsWith('http')) {
-    return decodeURIComponent(search);
-  }
 }
