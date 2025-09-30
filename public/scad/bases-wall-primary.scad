@@ -1,6 +1,6 @@
 /* [Texture] */
 // Select a texture.
-TEXTURE = "Dungeon Stone"; // [Dungeon Stone, Cut-Stone, Rough Stone, Towne, Plain, Necromancer's Ossuary]
+TEXTURE = "Dungeon Stone"; // [Dungeon Stone, Cut-Stone, Towne, Plain, Rough Stone, Facade - Ground Level, Facade - Ground Level -  Door, Facade - Upper Level, Facade - Upper Level - Chimney, Necromancer's Ossuary]
 
 /* [Base Wall Size] */
 // What is the wall size
